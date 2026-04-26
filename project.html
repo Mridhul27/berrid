@@ -1,0 +1,1943 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project — Berrid</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --brand: #311836;
+        --bl: #4a2353;
+        --acc: #e8c9b8;
+        --w: #fff;
+        --off: #faf9f8;
+        --mu: #888;
+        --brd: rgba(49, 24, 54, 0.1);
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Outfit", sans-serif;
+        background: var(--w);
+        color: #1a1a2e;
+        overflow-x: hidden;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* CURSOR */
+      .cur,
+      .cur-r {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 8000;
+        transform: translate(-50%, -50%);
+      }
+      .cur {
+        width: 8px;
+        height: 8px;
+        background: var(--brand);
+        transition:
+          width 0.2s,
+          height 0.2s;
+      }
+      .cur-r {
+        width: 32px;
+        height: 32px;
+        border: 1.5px solid rgba(49, 24, 54, 0.3);
+      }
+      @media (max-width: 768px) {
+        .cur,
+        .cur-r {
+          display: none;
+        }
+      }
+
+      /* SCROLL BAR */
+      #sprog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2.5px;
+        background: linear-gradient(90deg, var(--brand), var(--acc));
+        z-index: 300;
+        width: 0;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 60px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--brd);
+        transition:
+          padding 0.3s,
+          box-shadow 0.3s;
+      }
+      .nav-logo img {
+        height: 56px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        list-style: none;
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: #1a1a2e;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        position: relative;
+        transition: color 0.3s;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1.5px;
+        background: var(--brand);
+        transition: width 0.3s;
+      }
+      .nav-links a:hover {
+        color: var(--brand);
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+      .nav-cta {
+        background: var(--brand) !important;
+        color: var(--w) !important;
+        padding: 10px 24px !important;
+        border-radius: 2px;
+      }
+      .nav-cta::after {
+        display: none !important;
+      }
+      .ham {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 4px;
+        background: none;
+        border: none;
+      }
+      .ham span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: #1a1a2e;
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+      .ham.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .ham.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .ham.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+      .mob-nav {
+        display: none;
+        position: fixed;
+        top: 65px;
+        left: 0;
+        right: 0;
+        background: var(--w);
+        border-bottom: 1px solid var(--brd);
+        z-index: 199;
+        padding: 20px;
+        flex-direction: column;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      .mob-nav.open {
+        display: flex;
+      }
+      .mob-nav a {
+        text-decoration: none;
+        color: #1a1a2e;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--brd);
+        display: block;
+        transition:
+          color 0.2s,
+          padding-left 0.2s;
+      }
+      .mob-nav a:last-child {
+        border: none;
+      }
+      .mob-nav a:hover {
+        color: var(--brand);
+        padding-left: 8px;
+      }
+      .mob-nav .mc {
+        background: var(--brand);
+        color: var(--w) !important;
+        text-align: center;
+        padding: 16px !important;
+        border-radius: 2px;
+        margin-top: 8px;
+        border: none !important;
+      }
+
+      /* PAGE WRAPPER */
+      .page {
+        padding-top: 92px;
+        min-height: 100vh;
+      }
+
+      /* NOT FOUND STATE */
+      .not-found {
+        text-align: center;
+        padding: 120px 20px;
+      }
+      .not-found h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 40px;
+        margin-bottom: 16px;
+      }
+      .not-found p {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 32px;
+      }
+
+      /* PROJECT HERO */
+      .proj-hero {
+        background: var(--brand);
+        padding: 60px 60px 80px;
+        position: relative;
+        overflow: hidden;
+      }
+      .proj-hero::before {
+        content: "";
+        position: absolute;
+        top: -200px;
+        right: -150px;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+      }
+      .proj-hero::after {
+        content: "";
+        position: absolute;
+        bottom: -100px;
+        left: -80px;
+        width: 320px;
+        height: 320px;
+        background: rgba(232, 201, 184, 0.04);
+        border-radius: 50%;
+      }
+      .proj-hero-inner {
+        position: relative;
+        z-index: 2;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      /* BREADCRUMB */
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        transition: color 0.3s;
+      }
+      .breadcrumb a:hover {
+        color: var(--acc);
+      }
+      .breadcrumb .sep {
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+      }
+      .breadcrumb .cur-crumb {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      /* PROJ HEADER */
+      .proj-cat {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--acc);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .proj-cat::before {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: var(--acc);
+      }
+      .proj-title {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(40px, 6vw, 80px);
+        font-weight: 400;
+        color: #fff;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 24px;
+      }
+      .proj-brief {
+        font-size: 17px;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.75;
+        max-width: 680px;
+        margin-bottom: 48px;
+      }
+
+      /* PROJ HERO META */
+      .proj-hero-meta {
+        display: flex;
+        gap: 0;
+        flex-wrap: wrap;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 36px;
+      }
+      .phm {
+        padding: 0 40px 0 0;
+        margin-right: 40px;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .phm:last-child {
+        border-right: none;
+        margin-right: 0;
+      }
+      .phm-l {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.35);
+        margin-bottom: 6px;
+      }
+      .phm-v {
+        font-family: "DM Serif Display", serif;
+        font-size: 22px;
+        color: var(--acc);
+      }
+
+      /* TAGS ROW */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .tg {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.08);
+        padding: 5px 12px;
+        border-radius: 2px;
+        white-space: nowrap;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      /* HERO IMAGE */
+      .proj-img-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 60px;
+        transform: translateY(-40px);
+      }
+      .proj-img-wrap img {
+        width: 100%;
+        height: 480px;
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 40px 100px rgba(49, 24, 54, 0.25);
+        display: block;
+      }
+
+      /* CONTENT AREA */
+      .proj-body {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 60px 100px;
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 80px;
+        align-items: start;
+      }
+
+      /* MAIN CONTENT */
+      .proj-main {
+      }
+      .section-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-label::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--brand);
+        flex-shrink: 0;
+      }
+      .content-block {
+        margin-bottom: 52px;
+      }
+      .content-block h3 {
+        font-family: "DM Serif Display", serif;
+        font-size: 28px;
+        color: #1a1a2e;
+        margin-bottom: 16px;
+        line-height: 1.2;
+      }
+      .content-block p {
+        font-size: 15px;
+        color: #555;
+        line-height: 1.85;
+      }
+
+      /* OUTCOME HIGHLIGHT */
+      .outcome-box {
+        background: var(--brand);
+        border-radius: 4px;
+        padding: 36px;
+        margin-bottom: 52px;
+        position: relative;
+        overflow: hidden;
+      }
+      .outcome-box::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50%;
+      }
+      .outcome-box .section-label {
+        color: var(--acc);
+      }
+      .outcome-box .section-label::before {
+        background: var(--acc);
+      }
+      .outcome-box h3 {
+        font-family: "DM Serif Display", serif;
+        font-size: 26px;
+        color: #fff;
+        margin-bottom: 12px;
+        line-height: 1.3;
+        position: relative;
+        z-index: 1;
+      }
+      .outcome-box p {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.85;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* RESULTS GRID */
+      .results-section {
+        margin-bottom: 52px;
+      }
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+      }
+      .result-card {
+        background: var(--off);
+        border: 1px solid var(--brd);
+        border-radius: 3px;
+        padding: 24px;
+        text-align: center;
+        transition:
+          border-color 0.3s,
+          transform 0.3s;
+      }
+      .result-card:hover {
+        border-color: var(--brand);
+        transform: translateY(-3px);
+      }
+      .rc-val {
+        font-family: "DM Serif Display", serif;
+        font-size: 36px;
+        color: var(--brand);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .rc-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--mu);
+      }
+
+      /* SIDEBAR */
+      .proj-sidebar {
+        position: sticky;
+        top: 108px;
+      }
+      .sidebar-card {
+        background: var(--off);
+        border: 1px solid var(--brd);
+        border-radius: 4px;
+        padding: 32px;
+        margin-bottom: 20px;
+      }
+      .sidebar-card h5 {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--mu);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--brd);
+      }
+      .sidebar-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .sidebar-tags .tg {
+        color: var(--brand);
+        background: rgba(49, 24, 54, 0.06);
+        border: none;
+      }
+      .sidebar-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .sm-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .sm-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--mu);
+      }
+      .sm-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a2e;
+      }
+
+      /* CTA SIDEBAR */
+      .sidebar-cta {
+        background: var(--brand);
+        border-radius: 4px;
+        padding: 32px;
+        text-align: center;
+      }
+      .sidebar-cta h4 {
+        font-family: "DM Serif Display", serif;
+        font-size: 22px;
+        color: #fff;
+        margin-bottom: 10px;
+        line-height: 1.2;
+      }
+      .sidebar-cta p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.55);
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .sidebar-cta a {
+        display: block;
+        background: var(--acc);
+        color: var(--brand);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 14px 20px;
+        border-radius: 2px;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .sidebar-cta a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+      }
+
+      /* BACK / MORE PROJECTS */
+      .proj-nav {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 60px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid var(--brd);
+        padding-top: 48px;
+        flex-wrap: wrap;
+      }
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--brand);
+        transition: gap 0.3s;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-family: "Outfit", sans-serif;
+      }
+      .back-btn:hover {
+        gap: 16px;
+      }
+      .more-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--brand);
+        background: rgba(49, 24, 54, 0.06);
+        padding: 12px 24px;
+        border-radius: 2px;
+        transition:
+          background 0.3s,
+          transform 0.3s;
+      }
+      .more-btn:hover {
+        background: rgba(49, 24, 54, 0.1);
+        transform: translateY(-1px);
+      }
+
+      /* MORE PROJECTS STRIP */
+      .more-projects {
+        background: var(--off);
+        padding: 80px 60px;
+      }
+      .more-projects .sl {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .more-projects .sl::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--brand);
+      }
+      .more-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .more-card {
+        background: var(--w);
+        border: 1px solid var(--brd);
+        border-radius: 3px;
+        overflow: hidden;
+        text-decoration: none;
+        display: block;
+        transition:
+          transform 0.35s,
+          box-shadow 0.35s,
+          border-color 0.35s;
+      }
+      .more-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(49, 24, 54, 0.1);
+        border-color: rgba(49, 24, 54, 0.2);
+      }
+      .more-card-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        display: block;
+        background: #f0eaf5;
+        transition: transform 0.5s;
+      }
+      .more-card:hover .more-card-img {
+        transform: scale(1.04);
+      }
+      .more-card-img-wrap {
+        overflow: hidden;
+      }
+      .more-card-info {
+        padding: 20px;
+      }
+      .more-card-cat {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 6px;
+      }
+      .more-card-info h4 {
+        font-family: "DM Serif Display", serif;
+        font-size: 18px;
+        color: #1a1a2e;
+        line-height: 1.2;
+      }
+
+      /* FOOTER */
+      footer {
+        background: #0e0b12;
+        padding: 80px 60px 40px;
+      }
+      .ft {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 52px;
+      }
+      .fb img {
+        height: 52px;
+        margin-bottom: 18px;
+      }
+      .fb p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.4);
+        line-height: 1.8;
+        max-width: 260px;
+      }
+      .fc h5 {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 18px;
+      }
+      .fc ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .fc ul li a {
+        text-decoration: none;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.35);
+        transition:
+          color 0.3s,
+          padding-left 0.2s;
+        display: block;
+      }
+      .fc ul li a:hover {
+        color: rgba(255, 255, 255, 0.8);
+        padding-left: 4px;
+      }
+      .fbot {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .fbot p {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.25);
+        letter-spacing: 0.04em;
+      }
+      .fsoc {
+        display: flex;
+        gap: 12px;
+      }
+      .soc {
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+      .soc:hover {
+        border-color: var(--acc);
+        background: rgba(232, 201, 184, 0.08);
+        transform: translateY(-2px);
+      }
+      .soc svg {
+        stroke: rgba(255, 255, 255, 0.4);
+        transition: stroke 0.3s;
+      }
+      .soc:hover svg {
+        stroke: var(--acc);
+      }
+
+      /* ANIMATE IN */
+      .ai {
+        opacity: 0;
+        transform: translateY(32px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .ai.v {
+        opacity: 1;
+        transform: none;
+      }
+      .ai:nth-child(2) {
+        transition-delay: 0.1s;
+      }
+      .ai:nth-child(3) {
+        transition-delay: 0.2s;
+      }
+      .ai:nth-child(4) {
+        transition-delay: 0.3s;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1024px) {
+        nav {
+          padding: 16px 32px;
+        }
+        .proj-hero {
+          padding: 50px 32px 60px;
+        }
+        .proj-img-wrap {
+          padding: 0 32px;
+        }
+        .proj-body {
+          padding: 20px 32px 80px;
+          gap: 48px;
+        }
+        .proj-nav {
+          padding: 0 32px 48px;
+        }
+        .more-projects {
+          padding: 60px 32px;
+        }
+        footer {
+          padding: 64px 32px 36px;
+        }
+        .ft {
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
+        }
+      }
+      @media (max-width: 900px) {
+        .proj-body {
+          grid-template-columns: 1fr;
+        }
+        .proj-sidebar {
+          position: static;
+        }
+        .more-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 768px) {
+        nav {
+          padding: 14px 20px;
+        }
+        .nav-links {
+          display: none;
+        }
+        .ham {
+          display: flex;
+        }
+        .proj-hero {
+          padding: 40px 20px 50px;
+        }
+        .proj-hero-meta {
+          gap: 20px;
+        }
+        .phm {
+          border-right: none;
+          margin-right: 0;
+          padding-right: 0;
+        }
+        .proj-img-wrap {
+          padding: 0 20px;
+          transform: translateY(-24px);
+        }
+        .proj-img-wrap img {
+          height: 240px;
+        }
+        .proj-body {
+          padding: 0 20px 60px;
+        }
+        .proj-nav {
+          padding: 0 20px 40px;
+        }
+        .more-projects {
+          padding: 52px 20px;
+        }
+        .more-grid {
+          grid-template-columns: 1fr;
+        }
+        footer {
+          padding: 52px 20px 28px;
+        }
+        .ft {
+          grid-template-columns: 1fr;
+          gap: 36px;
+        }
+        .fbot {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .results-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- SCROLL PROGRESS -->
+    <div id="sprog"></div>
+
+    <!-- CURSOR -->
+    <div class="cur" id="cur"></div>
+    <div class="cur-r" id="cur-r"></div>
+
+    <!-- NAV -->
+    <nav id="nav">
+      <div class="nav-logo">
+        <a href="index.html"
+          ><img src="/images/Berrid-color.png" alt="Berrid"
+        /></a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#process">Process</a></li>
+        <li><a href="index.html#why">Why Berrid</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li>
+          <a href="index.html#contact" class="nav-cta">Start a Project</a>
+        </li>
+      </ul>
+      <button class="ham" id="ham" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="mob-nav" id="mobNav">
+      <a href="index.html#services" onclick="closeMenu()">Services</a>
+      <a href="index.html#process" onclick="closeMenu()">Process</a>
+      <a href="index.html#why" onclick="closeMenu()">Why Berrid</a>
+      <a href="index.html#contact" onclick="closeMenu()">Contact</a>
+      <a href="index.html#contact" class="mc" onclick="closeMenu()"
+        >Start a Project</a
+      >
+    </div>
+
+    <div class="page" id="page">
+      <!-- content injected by JS -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="ft">
+        <div class="fb">
+          <img src="/images/Berrid-white.png" alt="Berrid" />
+          <p>
+            Premium design and development studio crafting digital experiences
+            that deliver real results.
+          </p>
+        </div>
+        <div class="fc">
+          <h5>Services</h5>
+          <ul>
+            <li><a href="index.html#services">UI/UX Design</a></li>
+            <li><a href="index.html#services">Graphic Design</a></li>
+            <li><a href="index.html#services">Mobile Apps</a></li>
+            <li><a href="index.html#services">Web Development</a></li>
+            <li><a href="index.html#services">Backend &amp; API</a></li>
+          </ul>
+        </div>
+        <div class="fc">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Work</a></li>
+            <li><a href="#">Technology Stack</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="fc">
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="mailto:info@berrid.com">info@berrid.com</a></li>
+            <li><a href="tel:+917200597117">+91 7200 597117</a></li>
+            <li><a href="https://www.berrid.com">www.berrid.com</a></li>
+            <li><a href="#">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="fbot">
+        <p>© 2025 Berrid. All rights reserved.</p>
+        <div class="fsoc">
+          <a class="soc" href="#"
+            ><svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <path
+                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"
+              />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" /></svg
+          ></a>
+          <a class="soc" href="#"
+            ><svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <path
+                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"
+              /></svg
+          ></a>
+          <a class="soc" href="#"
+            ><svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ── ALL DATA (same as index.html) ── */
+      const D = {
+        uiux: {
+          title: "UI/UX Design",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "u1",
+              title: "Dayscholor",
+              cat: "School Management System",
+              img: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&h=400&fit=crop",
+              tags: ["Figma", "Design System", "Tokens"],
+              brief:
+                "Comprehensive design system for a digital banking platform — 200+ components, typography, and colour system.",
+              challenge:
+                "Multiple teams building inconsistent UIs, causing fragmented UX and slow development velocity.",
+              solution:
+                "Full atomic design system in Figma with tokens, components, documentation, and a coded component library.",
+              outcome:
+                "Cut UI development time by 60%. Unified brand across 8 product teams.",
+              stats: { components: "200+", faster: "60%", time: "12 wks" },
+              results: [
+                { v: "200+", l: "Components" },
+                { v: "60%", l: "Faster Dev" },
+                { v: "8", l: "Teams Unified" },
+                { v: "12wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "u2",
+              title: "Orion Travel",
+              cat: "Travel App UX Redesign",
+              img: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=700&h=400&fit=crop",
+              tags: ["Figma", "User Research", "Usability Testing"],
+              brief:
+                "Complete UX overhaul of a travel booking app — research through to high-fidelity prototypes.",
+              challenge:
+                "Existing app had 72% checkout drop-off. Users were confused by pricing and an untrustworthy checkout flow.",
+              solution:
+                "20 user interviews, card sorting, rebuilt booking flow with progressive disclosure and trust signals.",
+              outcome:
+                "Checkout drop-off reduced from 72% to 28% — a 61% improvement.",
+              stats: { improvement: "61%", rating: "4.8★", time: "10 wks" },
+              results: [
+                { v: "61%", l: "Less Drop-off" },
+                { v: "28%", l: "Checkout Exit" },
+                { v: "3.1x", l: "Conversions" },
+                { v: "10wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "u3",
+              title: "Surge CRM",
+              cat: "Enterprise Dashboard Design",
+              img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&h=400&fit=crop",
+              tags: ["Figma", "Information Architecture", "Prototyping"],
+              brief:
+                "Redesigned dashboard and workflows of an enterprise CRM used by 2,000+ sales reps daily.",
+              challenge:
+                "Sales reps spending 2+ hours a day in a legacy UI with 200+ features and no clear prioritisation.",
+              solution:
+                "IA audit, contextual inquiry with 15 reps, rebuilt navigation around job-to-be-done principles.",
+              outcome:
+                "Task time reduced 48%. Satisfaction score went from 3.1 to 4.6.",
+              stats: { users: "2K+", rating: "4.6★", time: "14 wks" },
+              results: [
+                { v: "48%", l: "Faster Tasks" },
+                { v: "4.6★", l: "Satisfaction" },
+                { v: "2K+", l: "Daily Users" },
+                { v: "14wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "u4",
+              title: "GreenCycle",
+              cat: "Sustainability App Design",
+              img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=700&h=400&fit=crop",
+              tags: ["Figma", "Motion Design", "Brand Identity"],
+              brief:
+                "Full brand identity and app UI for an eco-friendly recycling rewards platform targeting Gen Z.",
+              challenge:
+                "Making sustainability exciting to a younger audience who associated eco apps with dull interfaces.",
+              solution:
+                "Bold, playful identity with vibrant greens. Gamification layer with animations, streaks, and social sharing.",
+              outcome:
+                "50K downloads in first month, 91% of users rated the design as 'excellent'.",
+              stats: { downloads: "50K+", rating: "91%", time: "8 wks" },
+              results: [
+                { v: "50K+", l: "Downloads" },
+                { v: "91%", l: "Excellent UI" },
+                { v: "4.9★", l: "Rating" },
+                { v: "8wk", l: "Delivery" },
+              ],
+            },
+          ],
+        },
+        graphic: {
+          title: "Graphic Design & Brand Identity",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "g1",
+              title: "NovaBrand Co.",
+              cat: "Full Brand Identity",
+              img: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=700&h=400&fit=crop",
+              tags: ["Logo Design", "Brand Guidelines", "Stationery"],
+              brief:
+                "Complete brand identity for a B2B SaaS startup — logo, colour palette, typography, and brand guidelines.",
+              challenge:
+                "Startup had no visual identity. Needed a professional brand that conveyed trust and innovation.",
+              solution:
+                "Developed a unique logo mark, full brand guidelines, and a stationery suite ready for both print and digital.",
+              outcome:
+                "Brand launched to investors within 6 weeks. Described as 'memorable and authoritative' in feedback.",
+              stats: { assets: "40+", delivery: "6 wks", rating: "5★" },
+              results: [
+                { v: "40+", l: "Brand Assets" },
+                { v: "5★", l: "Client Rating" },
+                { v: "6wk", l: "Delivery" },
+                { v: "100%", l: "Approved" },
+              ],
+            },
+            {
+              id: "g2",
+              title: "The Leaf Cafe",
+              cat: "Restaurant Branding",
+              img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=700&h=400&fit=crop",
+              tags: ["Logo Design", "Menu Design", "Print"],
+              brief:
+                "Full branding package for a new organic cafe — logo, menus, business cards, and signage design.",
+              challenge:
+                "Owner wanted a warm, natural aesthetic that felt premium without being intimidating.",
+              solution:
+                "Earthy tones, botanical illustration-style logo, and clean menu layouts with strong typographic hierarchy.",
+              outcome:
+                "Cafe received praise for its cohesive look from day one. Brand used consistently across all touchpoints.",
+              stats: { items: "25+", delivery: "4 wks", rating: "5★" },
+              results: [
+                { v: "25+", l: "Print Assets" },
+                { v: "5★", l: "Client Rating" },
+                { v: "4wk", l: "Delivery" },
+                { v: "100%", l: "On Brand" },
+              ],
+            },
+            {
+              id: "g3",
+              title: "ApexFit",
+              cat: "Sports Brand Identity",
+              img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&h=400&fit=crop",
+              tags: ["Logo Design", "Apparel Graphics", "Social Kit"],
+              brief:
+                "Bold sports brand identity for a fitness clothing line — logo, apparel graphics, and social media kit.",
+              challenge:
+                "Brand needed to appeal to serious athletes while staying approachable to everyday gym-goers.",
+              solution:
+                "Dynamic logo with strong geometric forms, high-contrast colour system, and apparel-ready graphic assets.",
+              outcome:
+                "Brand launched with a 3-piece clothing line that sold out within the first month.",
+              stats: { assets: "50+", delivery: "5 wks", rating: "5★" },
+              results: [
+                { v: "50+", l: "Brand Assets" },
+                { v: "5★", l: "Client Rating" },
+                { v: "5wk", l: "Delivery" },
+                { v: "Sold Out", l: "Launch Month" },
+              ],
+            },
+            {
+              id: "g4",
+              title: "Meridian Consulting",
+              cat: "Corporate Print Design",
+              img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=700&h=400&fit=crop",
+              tags: ["Brochure Design", "Business Cards", "Pitch Deck"],
+              brief:
+                "Corporate print collateral for a management consulting firm — brochure, business cards, and pitch deck template.",
+              challenge:
+                "Existing materials looked outdated and inconsistent, undermining the firm's premium positioning.",
+              solution:
+                "Clean, structured layouts with refined typography. Designed a modular pitch deck template for easy updates.",
+              outcome:
+                "Client reported winning 2 new enterprise contracts citing improved presentation quality.",
+              stats: { pieces: "30+", delivery: "3 wks", rating: "5★" },
+              results: [
+                { v: "30+", l: "Print Pieces" },
+                { v: "5★", l: "Client Rating" },
+                { v: "3wk", l: "Delivery" },
+                { v: "2", l: "New Contracts" },
+              ],
+            },
+          ],
+        },
+        mobile: {
+          title: "Mobile App Development",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "m1",
+              title: "FitTrack Pro",
+              cat: "Health & Fitness App",
+              img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=700&h=400&fit=crop",
+              tags: ["React Native", "Node.js", "MongoDB"],
+              brief:
+                "A comprehensive fitness tracking app with AI-powered workout recommendations and real-time progress analytics.",
+              challenge:
+                "Needed cross-platform sync with multiple wearables while maintaining 60fps on lower-end Android devices.",
+              solution:
+                "React Native with custom native Bluetooth bridge. Lazy loading and optimized rendering pipelines.",
+              outcome:
+                "Launched on both stores, achieving 4.8★ rating within the first month.",
+              stats: { users: "120K+", rating: "4.8★", time: "14 wks" },
+              results: [
+                { v: "120K+", l: "Downloads" },
+                { v: "4.8★", l: "App Rating" },
+                { v: "68%", l: "D30 Retention" },
+                { v: "14wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "m2",
+              title: "PaySwift",
+              cat: "FinTech Mobile App",
+              img: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=700&h=400&fit=crop",
+              tags: ["Flutter", "Firebase", "Stripe"],
+              brief:
+                "A secure P2P payment app with instant transfers, split bills, and multi-currency support.",
+              challenge:
+                "Fintech requires the highest security, regulatory compliance, and frictionless UX — all at once.",
+              solution:
+                "Flutter for pixel-perfect UI. E2E encryption, biometric auth, Stripe. Full PCI DSS compliance.",
+              outcome:
+                "Processed over $2M in transactions within the first quarter post-launch.",
+              stats: { users: "$2M+", rating: "4.9★", time: "18 wks" },
+              results: [
+                { v: "$2M+", l: "Transactions" },
+                { v: "4.9★", l: "Rating" },
+                { v: "0", l: "Security Incidents" },
+                { v: "18wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "m3",
+              title: "FoodieGo",
+              cat: "Food Delivery App",
+              img: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=700&h=400&fit=crop",
+              tags: ["React Native", "Google Maps", "Socket.io"],
+              brief:
+                "Full-featured food delivery app with real-time tracking, restaurant discovery, and loyalty rewards.",
+              challenge:
+                "Coordinating real-time data between customers, restaurants, and drivers at scale.",
+              solution:
+                "Event-driven architecture with Socket.io. Google Maps live driver tracking. Gamified reward system.",
+              outcome:
+                "200+ restaurants, 5,000+ daily orders within 3 months of launch.",
+              stats: { users: "200+", rating: "4.7★", time: "20 wks" },
+              results: [
+                { v: "200+", l: "Restaurants" },
+                { v: "5K+", l: "Daily Orders" },
+                { v: "4.7★", l: "Rating" },
+                { v: "20wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "m4",
+              title: "LearnSphere",
+              cat: "EdTech Mobile App",
+              img: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=700&h=400&fit=crop",
+              tags: ["React Native", "AWS", "Kotlin"],
+              brief:
+                "Interactive e-learning platform with video courses, live sessions, quizzes, and certificates.",
+              challenge:
+                "Delivering high-quality video to learners in low-bandwidth regions without degrading experience.",
+              solution:
+                "Adaptive bitrate streaming, offline downloads. React Native + Kotlin. Custom spaced-repetition quiz engine.",
+              outcome:
+                "30,000 enrolled students in 60 days with 82% course completion rate.",
+              stats: { users: "30K+", rating: "4.6★", time: "22 wks" },
+              results: [
+                { v: "30K+", l: "Students" },
+                { v: "82%", l: "Completion" },
+                { v: "4.6★", l: "Rating" },
+                { v: "22wk", l: "Delivery" },
+              ],
+            },
+          ],
+        },
+        web: {
+          title: "Web Application Development",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "w1",
+              title: "NovaDash",
+              cat: "SaaS Analytics Platform",
+              img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=700&h=400&fit=crop",
+              tags: ["React", "TypeScript", "PostgreSQL"],
+              brief:
+                "Real-time analytics dashboard with customisable charts, team collaboration, and automated reporting.",
+              challenge:
+                "Visualising millions of data points in real-time without impacting page performance.",
+              solution:
+                "React with SSR. WebSockets for live data. Virtualised canvas-based charts for large datasets.",
+              outcome:
+                "Used by 500+ businesses, processing 10M+ data events daily.",
+              stats: { users: "500+", rating: "98%", time: "16 wks" },
+              results: [
+                { v: "500+", l: "Businesses" },
+                { v: "10M+", l: "Events/Day" },
+                { v: "98%", l: "Uptime" },
+                { v: "16wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "w2",
+              title: "TalentHive",
+              cat: "HR & Recruitment Platform",
+              img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=700&h=400&fit=crop",
+              tags: ["React", "Laravel", "MySQL"],
+              brief:
+                "End-to-end hiring platform with ATS, video interviews, assessments, and onboarding workflows.",
+              challenge:
+                "Replacing a legacy HR system used by 100+ managers with entrenched workflows — minimal disruption required.",
+              solution:
+                "Phased migration with compatibility layer. Clean React UI with drag-and-drop pipeline views.",
+              outcome:
+                "Reduced average time-to-hire by 42% within the first 6 months.",
+              stats: { users: "100+", rating: "42%", time: "24 wks" },
+              results: [
+                { v: "100+", l: "HR Managers" },
+                { v: "42%", l: "Faster Hiring" },
+                { v: "3x", l: "Productivity" },
+                { v: "24wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "w3",
+              title: "PropVault",
+              cat: "Real Estate Web App",
+              img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=700&h=400&fit=crop",
+              tags: ["React", "Django", "PostgreSQL"],
+              brief:
+                "Property listing platform with interactive maps, virtual tours, and mortgage calculators.",
+              challenge:
+                "Thousands of listings with complex geospatial filtering — sub-second search required.",
+              solution:
+                "PostGIS for geospatial, Mapbox GL for maps, Redis caching, CDN-optimised images.",
+              outcome:
+                "15,000+ properties listed, average search response under 200ms.",
+              stats: { users: "15K+", rating: "<200ms", time: "18 wks" },
+              results: [
+                { v: "15K+", l: "Listings" },
+                { v: "200ms", l: "Search Time" },
+                { v: "3x", l: "Lead Growth" },
+                { v: "18wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "w4",
+              title: "ClinicOS",
+              cat: "Healthcare Management System",
+              img: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=700&h=400&fit=crop",
+              tags: ["React", "Django", "PostgreSQL"],
+              brief:
+                "Clinic management system with appointment booking, patient records, billing, and telemedicine.",
+              challenge:
+                "Needed a HIPAA-compliant system handling sensitive data while remaining easy for non-technical staff.",
+              solution:
+                "Secure AWS infrastructure, E2E encryption, RBAC. Validated by real clinic staff in beta.",
+              outcome:
+                "Deployed across 12 clinics, managing 50,000+ patient records.",
+              stats: { users: "12", rating: "50K+", time: "26 wks" },
+              results: [
+                { v: "12", l: "Clinics" },
+                { v: "50K+", l: "Patient Records" },
+                { v: "HIPAA", l: "Compliant" },
+                { v: "26wk", l: "Delivery" },
+              ],
+            },
+          ],
+        },
+        backend: {
+          title: "Backend & API Development",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "b1",
+              title: "StreamCore API",
+              cat: "Video Streaming Infrastructure",
+              img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=700&h=400&fit=crop",
+              tags: ["Python", "Django", "AWS", "Redis"],
+              brief:
+                "Scalable video streaming backend handling transcoding, adaptive bitrate delivery, and real-time analytics.",
+              challenge:
+                "Legacy server couldn't handle 1,000 concurrent streams and caused frequent outages.",
+              solution:
+                "Distributed microservices on AWS. ElasticTranscoder, CloudFront CDN, Redis for session management.",
+              outcome:
+                "Now handles 50,000+ concurrent streams with 99.9% uptime.",
+              stats: { users: "50K+", rating: "99.9%", time: "16 wks" },
+              results: [
+                { v: "50K+", l: "Concurrent Streams" },
+                { v: "99.9%", l: "Uptime" },
+                { v: "50x", l: "Scale Increase" },
+                { v: "16wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "b2",
+              title: "PayRoute",
+              cat: "Payment Gateway Integration",
+              img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=700&h=400&fit=crop",
+              tags: ["Laravel", "Stripe", "PostgreSQL", "Webhooks"],
+              brief:
+                "Unified payment API aggregating Stripe, PayPal, and local methods across 15 countries.",
+              challenge:
+                "Different payment requirements, currencies, and regulations across multiple regions in one API.",
+              solution:
+                "Abstraction layer normalising provider APIs. Idempotent webhook handler with retry logic.",
+              outcome:
+                "Processing $5M+ monthly across 15 countries with zero failed webhook events.",
+              stats: { users: "$5M+", rating: "15", time: "12 wks" },
+              results: [
+                { v: "$5M+", l: "Monthly Volume" },
+                { v: "15", l: "Countries" },
+                { v: "0", l: "Failed Events" },
+                { v: "12wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "b3",
+              title: "LogiTrack",
+              cat: "Supply Chain API Platform",
+              img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&h=400&fit=crop",
+              tags: ["Python", "Django", "MySQL", "Docker"],
+              brief:
+                "Real-time supply chain tracking API integrating with 30+ logistics providers and IoT sensors.",
+              challenge:
+                "Ingesting and normalising data from 30+ APIs with inconsistent data formats.",
+              solution:
+                "Event-driven pipeline. Schema normalisation engine. REST API for flexible queries.",
+              outcome:
+                "Tracking 500,000+ shipments daily with under 2-second latency.",
+              stats: { users: "500K+", rating: "<2s", time: "20 wks" },
+              results: [
+                { v: "500K+", l: "Shipments/Day" },
+                { v: "<2s", l: "Latency" },
+                { v: "30+", l: "Integrations" },
+                { v: "20wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "b4",
+              title: "AuthShield",
+              cat: "Identity & Auth Platform",
+              img: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=700&h=400&fit=crop",
+              tags: ["Laravel", "OAuth 2.0", "JWT", "Redis"],
+              brief:
+                "White-label authentication platform with SSO, MFA, and role-based access control.",
+              challenge:
+                "Multiple products each built their own auth, causing security inconsistencies and duplicated effort.",
+              solution:
+                "Centralised platform supporting OAuth 2.0, MFA with TOTP and SMS. Fine-grained RBAC.",
+              outcome:
+                "Securing 200,000+ user accounts across 12 client products.",
+              stats: { users: "200K+", rating: "12", time: "14 wks" },
+              results: [
+                { v: "200K+", l: "User Accounts" },
+                { v: "12", l: "Products" },
+                { v: "SOC2", l: "Compliant" },
+                { v: "14wk", l: "Delivery" },
+              ],
+            },
+          ],
+        },
+        support: {
+          title: "Maintenance & Long-Term Support",
+          subtitle: "4 projects",
+          projects: [
+            {
+              id: "s1",
+              title: "CloudBase ERP",
+              cat: "Legacy System Modernisation",
+              img: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=700&h=400&fit=crop",
+              tags: ["React", "Django", "AWS Migration"],
+              brief:
+                "Modernised a 10-year-old on-premise ERP, migrated to cloud with zero data loss.",
+              challenge:
+                "Legacy system with zero documentation. Phased migration required to avoid business disruption.",
+              solution:
+                "Full codebase audit, incremental migration plan, parallel systems during transition.",
+              outcome:
+                "100% successful migration, zero data loss, 40% infrastructure cost reduction.",
+              stats: { users: "0", rating: "40%", time: "32 wks" },
+              results: [
+                { v: "0", l: "Data Loss" },
+                { v: "40%", l: "Cost Savings" },
+                { v: "99.9%", l: "Uptime" },
+                { v: "32wk", l: "Duration" },
+              ],
+            },
+            {
+              id: "s2",
+              title: "RetailPulse",
+              cat: "Performance Optimisation",
+              img: "https://images.unsplash.com/photo-1556742111-a301076d9d18?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1556742111-a301076d9d18?w=700&h=400&fit=crop",
+              tags: ["React", "Performance Audit", "CDN"],
+              brief:
+                "Performance audit and optimisation of a retail web app with 7.2s load time and high bounce rate.",
+              challenge:
+                "7.2s load time, 68% mobile bounce rate, costing £200K/month in lost sales.",
+              solution:
+                "Full audit. Code splitting, image optimisation, CDN caching, DB query optimisation.",
+              outcome: "Load time: 7.2s → 1.4s. Mobile bounce: 68% → 31%.",
+              stats: { users: "1.4s", rating: "92", time: "6 wks" },
+              results: [
+                { v: "1.4s", l: "Load Time" },
+                { v: "92", l: "PageSpeed" },
+                { v: "54%", l: "Less Bounce" },
+                { v: "6wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "s3",
+              title: "MedPortal",
+              cat: "Security & Compliance Audit",
+              img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=700&h=400&fit=crop",
+              tags: ["Security Audit", "GDPR", "Pen Testing"],
+              brief:
+                "Full security audit, GDPR compliance review, and penetration testing for a healthcare portal.",
+              challenge:
+                "Startup needed to pass a security audit before signing enterprise contracts. 6 weeks to fix everything.",
+              solution:
+                "Comprehensive audit identifying 18 vulnerabilities. Fixed all critical issues. Implemented GDPR framework.",
+              outcome:
+                "Passed all audits. Secured 3 enterprise contracts immediately after.",
+              stats: { users: "18", rating: "100%", time: "6 wks" },
+              results: [
+                { v: "18", l: "Vulns Fixed" },
+                { v: "100%", l: "Audit Pass" },
+                { v: "3", l: "Enterprise Deals" },
+                { v: "6wk", l: "Delivery" },
+              ],
+            },
+            {
+              id: "s4",
+              title: "GrowStack",
+              cat: "Ongoing Dev Partnership",
+              img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&h=500&fit=crop",
+              th: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=700&h=400&fit=crop",
+              tags: ["React", "Laravel", "Monthly Retainer"],
+              brief:
+                "Long-term monthly retainer — shipping features and scaling infrastructure for a fast-growing SaaS.",
+              challenge:
+                "Startup needed senior engineers to ship fast without full-time hiring overhead.",
+              solution:
+                "Dedicated engineers + designer. 2-week sprints, weekly syncs, full CI/CD pipeline.",
+              outcome: "42 features in 18 months. Users grew from 2K to 18K.",
+              stats: { users: "18K+", rating: "42", time: "18 mo+" },
+              results: [
+                { v: "42", l: "Features Shipped" },
+                { v: "18K+", l: "Active Users" },
+                { v: "9x", l: "User Growth" },
+                { v: "18mo", l: "Partnership" },
+              ],
+            },
+          ],
+        },
+      };
+
+      /* ── READ URL PARAMS & RENDER ── */
+      const params = new URLSearchParams(window.location.search);
+      const serviceKey = params.get("service");
+      const projectId = params.get("id");
+      const service = D[serviceKey];
+      const project = service
+        ? service.projects.find((p) => p.id === projectId)
+        : null;
+      const page = document.getElementById("page");
+
+      if (!project) {
+        document.title = "Project Not Found — Berrid";
+        page.innerHTML = `
+          <div class="not-found">
+            <h2>Project Not Found</h2>
+            <p>The project you're looking for doesn't exist or has been removed.</p>
+            <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--brand);color:#fff;text-decoration:none;padding:14px 32px;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;">
+              ← Back to Home
+            </a>
+          </div>`;
+      } else {
+        document.title = `${project.title} — Berrid`;
+
+        /* Get 3 "more" projects (from same service, excluding current) */
+        const moreProjects = service.projects
+          .filter((p) => p.id !== projectId)
+          .slice(0, 3);
+
+        const firstStatEntry = Object.entries(project.stats)[2];
+
+        page.innerHTML = `
+          <!-- HERO -->
+          <div class="proj-hero">
+            <div class="proj-hero-inner">
+              <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span class="sep">›</span>
+                <a href="index.html#services">Services</a>
+                <span class="sep">›</span>
+                <a href="index.html" onclick="setTimeout(()=>{ openModalOnLoad('${serviceKey}') },400); return false;">${service.title}</a>
+                <span class="sep">›</span>
+                <span class="cur-crumb">${project.title}</span>
+              </div>
+              <div class="proj-cat">${project.cat}</div>
+              <h1 class="proj-title">${project.title}</h1>
+              <p class="proj-brief">${project.brief}</p>
+              <div class="tags">
+                ${project.tags.map((t) => `<span class="tg">${t}</span>`).join("")}
+              </div>
+              <div class="proj-hero-meta" style="margin-top:36px;">
+                ${Object.entries(project.stats)
+                  .map(
+                    ([k, v]) => `
+                  <div class="phm">
+                    <div class="phm-l">${k}</div>
+                    <div class="phm-v">${v}</div>
+                  </div>`,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          </div>
+
+          <!-- HERO IMAGE -->
+          <div class="proj-img-wrap">
+            <img src="${project.img}" alt="${project.title}" />
+          </div>
+
+          <!-- BODY -->
+          <div class="proj-body">
+            <div class="proj-main">
+              <div class="content-block ai">
+                <div class="section-label">The Brief</div>
+                <h3>Project Overview</h3>
+                <p>${project.brief}</p>
+              </div>
+              <div class="content-block ai">
+                <div class="section-label">The Challenge</div>
+                <h3>What We Were Up Against</h3>
+                <p>${project.challenge}</p>
+              </div>
+              <div class="content-block ai">
+                <div class="section-label">Our Solution</div>
+                <h3>How We Solved It</h3>
+                <p>${project.solution}</p>
+              </div>
+              <div class="outcome-box ai">
+                <div class="section-label">The Outcome</div>
+                <h3>${project.outcome}</h3>
+                <p>This project stands as a testament to what focused design thinking and clean engineering can deliver for ambitious clients.</p>
+              </div>
+              <div class="results-section ai">
+                <div class="section-label">Results at a Glance</div>
+                <div class="results-grid">
+                  ${project.results
+                    .map(
+                      (r) => `
+                    <div class="result-card">
+                      <div class="rc-val">${r.v}</div>
+                      <div class="rc-label">${r.l}</div>
+                    </div>`,
+                    )
+                    .join("")}
+                </div>
+              </div>
+            </div>
+
+            <div class="proj-sidebar">
+              <div class="sidebar-card">
+                <h5>Technologies Used</h5>
+                <div class="sidebar-tags">
+                  ${project.tags.map((t) => `<span class="tg">${t}</span>`).join("")}
+                </div>
+              </div>
+              <div class="sidebar-card">
+                <h5>Project Details</h5>
+                <div class="sidebar-meta">
+                  <div class="sm-item"><div class="sm-label">Service</div><div class="sm-value">${service.title}</div></div>
+                  <div class="sm-item"><div class="sm-label">Category</div><div class="sm-value">${project.cat}</div></div>
+                  ${Object.entries(project.stats)
+                    .map(
+                      ([k, v]) =>
+                        `<div class="sm-item"><div class="sm-label">${k}</div><div class="sm-value">${v}</div></div>`,
+                    )
+                    .join("")}
+                </div>
+              </div>
+              <div class="sidebar-cta">
+                <h4>Have a Similar Project?</h4>
+                <p>Let's talk about how we can deliver results like these for you.</p>
+                <a href="index.html#contact">Start a Conversation</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- NAVIGATION -->
+          <div class="proj-nav">
+            <a class="back-btn" href="javascript:history.back()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+              Back to Projects
+            </a>
+            <a class="more-btn" href="index.html#contact">
+              Start Your Project
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <!-- MORE PROJECTS -->
+          ${
+            moreProjects.length > 0
+              ? `
+          <div class="more-projects">
+            <div class="sl">More from ${service.title}</div>
+            <div class="more-grid">
+              ${moreProjects
+                .map(
+                  (p) => `
+                <a class="more-card" href="project.html?service=${serviceKey}&id=${p.id}">
+                  <div class="more-card-img-wrap">
+                    <img class="more-card-img" src="${p.th}" alt="${p.title}" loading="lazy" />
+                  </div>
+                  <div class="more-card-info">
+                    <div class="more-card-cat">${p.cat}</div>
+                    <h4>${p.title}</h4>
+                  </div>
+                </a>`,
+                )
+                .join("")}
+            </div>
+          </div>`
+              : ""
+          }
+        `;
+      }
+
+      /* ── SCROLL ── */
+      window.addEventListener("scroll", () => {
+        const pct =
+          (window.scrollY /
+            (document.documentElement.scrollHeight - window.innerHeight)) *
+          100;
+        document.getElementById("sprog").style.width = pct + "%";
+        const nav = document.getElementById("nav");
+        const mob = window.innerWidth <= 768;
+        if (window.scrollY > 60) {
+          nav.style.padding = mob ? "12px 20px" : "14px 60px";
+          nav.style.boxShadow = "0 4px 30px rgba(0,0,0,0.06)";
+        } else {
+          nav.style.padding = mob ? "14px 20px" : "18px 60px";
+          nav.style.boxShadow = "none";
+        }
+      });
+
+      /* ── INTERSECTION OBSERVER for .ai ── */
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("v");
+          });
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+      );
+      setTimeout(() => {
+        document.querySelectorAll(".ai").forEach((el) => io.observe(el));
+      }, 100);
+
+      /* ── CURSOR ── */
+      const cur = document.getElementById("cur");
+      const curR = document.getElementById("cur-r");
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cur.style.left = mx + "px";
+        cur.style.top = my + "px";
+      });
+      (function loopR() {
+        rx += (mx - rx) * 0.1;
+        ry += (my - ry) * 0.1;
+        curR.style.left = rx + "px";
+        curR.style.top = ry + "px";
+        requestAnimationFrame(loopR);
+      })();
+      document
+        .querySelectorAll("a,button,.result-card,.more-card")
+        .forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cur.style.width = "16px";
+            cur.style.height = "16px";
+          });
+          el.addEventListener("mouseleave", () => {
+            cur.style.width = "8px";
+            cur.style.height = "8px";
+          });
+        });
+
+      /* ── MOBILE NAV ── */
+      function toggleMenu() {
+        document.getElementById("mobNav").classList.toggle("open");
+        document.getElementById("ham").classList.toggle("open");
+      }
+      function closeMenu() {
+        document.getElementById("mobNav").classList.remove("open");
+        document.getElementById("ham").classList.remove("open");
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) closeMenu();
+      });
+    </script>
+  </body>
+</html>
